@@ -6,14 +6,14 @@ import java.io.IOException;
 import java.util.StringTokenizer;
  
 public class ParseOutput {
-
+ 
 	public static void main(String s[]) throws Exception{
 		String sCurrentLine;
-		int NumberOfClusters = 25;
+		int NumberOfClusters = 35;
 		int TotalCMSVerticals = 531;
 		BufferedReader br = null;
 		
-		br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/Output_25"));
+		br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/Output_35"));
 		int startLine = 1; 
 		while ((sCurrentLine = br.readLine()) != null) {
 			if(sCurrentLine.contains("Full Data"))
