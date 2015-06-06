@@ -9,11 +9,11 @@ public class ParseOutput {
  
 	public static void main(String s[]) throws Exception{
 		String sCurrentLine;
-		int NumberOfClusters = 35;
+		int NumberOfClusters = 25;
 		int TotalCMSVerticals = 531;
 		BufferedReader br = null;
 		
-		br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/Output_35"));
+		br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/Output_25"));
 		int startLine = 1; 
 		while ((sCurrentLine = br.readLine()) != null) {
 			if(sCurrentLine.contains("Full Data"))
@@ -45,7 +45,7 @@ public class ParseOutput {
 				totalofAllVertical[0]+=totalforCurrVertical;
 				outputArr[x][0] =totalforCurrVertical;
 				
-				for(int y = 1; y < NumberOfClusters; y++){
+				for(int y = 1; y < NumberOfClusters+1; y++){
 					String t = st.nextToken();
 					totalofAllVertical[y]+=Double.parseDouble(t);
 					outputArr[x][y] = Double.parseDouble(t);
@@ -57,8 +57,10 @@ public class ParseOutput {
 			currStart++;
 		}
 		int y = 0;
+		System.out.println("asasasssaas"+totalofAllVertical.length);
 		for(Double r:totalofAllVertical){
 			outputArr[TotalCMSVerticals][y] = r;
+			System.out.println("rrrrrtrt"+r);
 			y++;
 		}
 		
@@ -67,10 +69,10 @@ public class ParseOutput {
 			for(int j = 0; j<NumberOfClusters+1;j++)
 			{	
 //				if (i<10)
-				{System.out.print(outputArr[i][j]+",");}
+//				{System.out.print(outputArr[i][j]+",");}
 			}
 //			if (i<10)
-			System.out.println("");
+//			System.out.println("");
 		}
 		
 		System.out.println("CHECK");
@@ -90,11 +92,14 @@ public class ParseOutput {
 			fileWriter.append("{\n");
 			fileWriter.append("\"name\": \"Cluster-"+ivar+"\",\n");
 			fileWriter.append("\"children\": [\n");
+			System.out.println("CHECK2");
 			for(int jvar = 0; jvar < TotalCMSVerticals; jvar++)
 			{
 				//Print name of Vertical
-				double value = (outputArr[jvar][0]*outputArr[jvar][ivar]*100)/(totalofAllVertical[0]*totalofAllVertical[ivar]);
-				System.out.println(value);
+				//double value = (outputArr[jvar][0]*outputArr[jvar][ivar]*100)/(totalofAllVertical[0]*totalofAllVertical[ivar]);
+				double value = (outputArr[jvar][ivar]*100)/(totalofAllVertical[ivar]);
+//				if(ivar == NumberOfClusters)
+//					System.out.println(cmsVerticals[jvar]+" "+outputArr[jvar][0]+" "+outputArr[jvar][ivar]+" "+totalofAllVertical[0]+" "+totalofAllVertical[ivar]);
 				fileWriter.append("{\"name\": \""+cmsVerticals[jvar]+"\", \"size\": "+value);
 				if(jvar < TotalCMSVerticals-1)
 					fileWriter.append(" },\n");
