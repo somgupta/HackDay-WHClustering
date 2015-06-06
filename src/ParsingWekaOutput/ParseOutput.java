@@ -71,35 +71,48 @@ public class ParseOutput {
 		
 	
 		int currStart = startLine;
+	
+		
 		double[][] outputArr = new double[TotalCMSVerticals+1][NumberOfClusters+1];
 		double[] rowArr = new double[NumberOfClusters+1];
+		double[] clusterSignificance = new double[NumberOfClusters+1];
 		
 		double[] totalofAllVertical = new double[NumberOfClusters+1];
 		String[] cmsVerticals = new String[TotalCMSVerticals];
 		int x =0;
 		while ((sCurrentLine = br.readLine()) != null && currStart < startLine +2+ TotalCMSVerticals) {
+		
+			if(currStart == startLine)
+			{
+				StringTokenizer st = new StringTokenizer(sCurrentLine);
+				for(int cs=0; cs<NumberOfClusters+1;cs++) {
+					String tok = st.nextToken();
+					System.out.println(tok);
+					System.out.println(Double.parseDouble(tok.split("\\(")[1].split("\\)")[0]));
+					clusterSignificance[cs] = Double.parseDouble(tok.split("\\(")[1].split("\\)")[0]);
+				}
+			}
 			if(currStart >= startLine+2)
 			{	StringTokenizer st = new StringTokenizer(sCurrentLine);
 				cmsVerticals[x] = st.nextToken();
 				Double totalforCurrVertical = Double.parseDouble(st.nextToken());
 				totalofAllVertical[0]+=totalforCurrVertical;
 				outputArr[x][0] =totalforCurrVertical;
-				
-				double max = 0;
+
 				for(int y = 1; y < NumberOfClusters+1; y++){
 					String t = st.nextToken();
 					totalofAllVertical[y]+=Double.parseDouble(t);
 					rowArr[y] = Double.parseDouble(t);
-					if(rowArr[y]>max)
-						max = rowArr[y];
+					outputArr[x][y] = rowArr[y];
+
 				}
 				
-				for(int y = 1; y < NumberOfClusters+1; y++){
-					if(rowArr[y] == max)
-						outputArr[x][y] = max;
-					else
-						outputArr[x][y] = 0;
-				}
+//				for(int y = 1; y < NumberOfClusters+1; y++){
+//					if(rowArr[y] == max)
+//						outputArr[x][y] = max;
+//					else
+//						outputArr[x][y] = 0;
+//				}
 				x++;
 			}
 
@@ -112,10 +125,10 @@ public class ParseOutput {
 			y++;
 		}
 		
-		createJson(NumberOfClusters, TotalCMSVerticals, outputArr, cmsVerticals, totalofAllVertical);
+		createJson(NumberOfClusters, TotalCMSVerticals, outputArr, cmsVerticals, clusterSignificance);
 	}
 	private static void createJson(int NumberOfClusters, int TotalCMSVerticals,
-			double[][] outputArr, String[] cmsVerticals, double[] totalofAllVertical) {
+			double[][] outputArr, String[] cmsVerticals, double[] clusterSignificance) {
 		FileWriter fileWriter = null;
 		
 		try{
@@ -137,7 +150,7 @@ public class ParseOutput {
 			{
 				//Print name of Vertical
 				//double value = (outputArr[jvar][0]*outputArr[jvar][ivar]*100)/(totalofAllVertical[0]*totalofAllVertical[ivar]);
-				double value = (outputArr[jvar][ivar]*100);
+				double value = (outputArr[jvar][ivar]*clusterSignificance[ivar]*100)/(clusterSignificance[0]);
 
 //				if(ivar == NumberOfClusters)
 //					System.out.println(cmsVerticals[jvar]+" "+outputArr[jvar][0]+" "+outputArr[jvar][ivar]+" "+totalofAllVertical[0]+" "+totalofAllVertical[ivar]);
