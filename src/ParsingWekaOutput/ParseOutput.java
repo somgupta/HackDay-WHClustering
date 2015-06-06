@@ -80,6 +80,10 @@ public class ParseOutput {
 		    
 		    fileWriter = new FileWriter("ClusterMAPData.json");
 		
+		    fileWriter.append("{\n");
+			fileWriter.append("\"name\": \"MAIN START\",\n");
+			fileWriter.append("\"children\": [\n");
+			
 		for(int ivar = 1; ivar < NumberOfClusters+1;ivar++)
 		{
 			//Print name of cluster
@@ -102,6 +106,7 @@ public class ParseOutput {
 			else
 				fileWriter.append("}\n");
 		}
+		fileWriter.append("]\n}\n");
 		}
 		catch(Exception e){
 	    	e.printStackTrace();
