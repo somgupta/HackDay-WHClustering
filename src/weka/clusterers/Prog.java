@@ -28,9 +28,10 @@ public class Prog {
         BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/all_data2.arff"));
 
         HashMap <String, Set<String>> hm = new HashMap<String, Set<String>>();
+        HashSet<String> setofVerticals = new HashSet<String>();
+        
         //read comma separated file line by line
         while ((line = br.readLine()) != null) {
-            lineNumber++;
 
             //use comma as token separator
             st = new StringTokenizer(line, ",");
@@ -39,72 +40,72 @@ public class Prog {
                 tokenNumber++;
                 	
                 
-                String value = st.nextToken();
                 String key = st.nextToken();
+                String value = st.nextToken();
                 Set<String> s = new HashSet<String>();
                 if(hm.containsKey(key)) {
                     s = hm.get(key);
                 }
                 s.add(value);
                 hm.put(key, s);
+                
+                setofVerticals.add(value);
+                
+                if(lineNumber%1000==0)
+                	System.out.println(hm.get(key));
            
+                lineNumber++;
             }
 
          
         }
         
-        
-        
-//       int arr[][] = new int[hm.keySet().size()][hm.keySet().size()];
-        System.out.println(hm.keySet().size());
-        String arr[] = new String[hm.keySet().size()];
+        System.out.println();
+        String arrofVerticals[] = new String[setofVerticals.size()];
         int ui = 0;
-    for(String t: hm.keySet())
-    {
-    arr[ui] = t;	
-    ui++;
-    }
-    Arrays.sort(arr);
+	    for(String t: setofVerticals)
+	    {
+		    arrofVerticals[ui] = t;	
+		    ui++;
+	    }
+	    Arrays.sort(arrofVerticals);
+	    
 //    for(String p:arr)
 //    {
 //    	System.out.println(p);
 //    System.out.println(hm.get(p));}
-    int u= 0;
-    for(String cmsVerticalOut : arr){
-    	u++;
-//    	if(u%100==0)
-//       	{System.out.println("Key:-------------------------------- ");
-//    	System.out.println("Key: "+ arr);
-//    	System.out.println(hm.get(cmsVerticalOut));
-//    	System.out.println("Key:-------------------------------- ");
-//    }
-    	}
+
     FileWriter fileWriter = null;
     try{
     
     fileWriter = new FileWriter("sampleData.arff");
     fileWriter.append("@relation KMeans\n\n");
-    for(String abcd2 : arr){
+    for(String abcd2 : arrofVerticals){
     	fileWriter.append("@attribute "+abcd2+" NUMERIC\n");
     }
     fileWriter.append("@data\n");
-    for(String cmsVerticalOut : arr)
+    for(String OrderIDRow : hm.keySet())
     {
-    	HashSet<String> ordersSet = (HashSet<String>) hm.get(cmsVerticalOut);
-    	String currentKeySet = cmsVerticalOut;
+    	HashSet<String> ordersSet = (HashSet<String>) hm.get(OrderIDRow);
+    	String currentKeySet = OrderIDRow;
     	
     	String output ="";
     	int y = 0;
-    	for(String cmsVerticalIn : arr)
-    	{   Set<String> currSet = (HashSet<String>) (((HashSet<String>) hm.get(cmsVerticalOut)).clone());
     	
-    		currSet.addAll(hm.get(cmsVerticalIn));
+    	Set<String> currSet = (HashSet<String>) (((HashSet<String>) hm.get(OrderIDRow)).clone());
+    	
+    	for(String cmsVerticalIn : arrofVerticals)
+    	{   
     		if (y>0)
     		{
     			output += ",";
     		}
     		y++;
-    		output = output + currSet.size();
+    		
+    		if(currSet.contains(cmsVerticalIn))
+    			output = output + "1";
+    		else
+    			output = output + "0";
     	}
     	
     	fileWriter.append(String.valueOf(output+"\n"));

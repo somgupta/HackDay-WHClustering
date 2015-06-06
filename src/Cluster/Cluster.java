@@ -30,7 +30,7 @@ public class Cluster {
  
 		//important parameter to set: preserver order, number of cluster.
 		kmeans.setPreserveInstancesOrder(true);
-		kmeans.setNumClusters(13);
+		kmeans.setNumClusters(10);
 		System.out.println(kmeans.distanceFunctionTipText());
 		BufferedReader datafile = readDataFile(System.getProperty("user.dir")+"/one.arff"); 
 		Instances data = new Instances(datafile);
