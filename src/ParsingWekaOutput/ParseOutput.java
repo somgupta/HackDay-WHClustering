@@ -6,18 +6,56 @@ import java.io.IOException;
 import java.util.StringTokenizer;
  
 public class ParseOutput {
- 
+	
+	private double [][] getClusterAssignmentWithWeightage(double[][] outputFromWeka, int ClusterSize, int NumberOfVerticals)
+	{
+		double analyser[][] = new double[NumberOfVerticals][ClusterSize];
+		
+		for(int i = 0; i < NumberOfVerticals; i++)
+		{	int maxForVerticalIndex = -1;
+			double maxForVerticalValue = Double.MIN_NORMAL;
+			double totalValueForVerticalForAllCluster = 0.0;
+			for(int j =1; j<ClusterSize+1;j++)
+			{
+				totalValueForVerticalForAllCluster+=outputFromWeka[i][j];
+				if(maxForVerticalValue < outputFromWeka[i][j])
+				{
+					maxForVerticalIndex = j;
+				}
+				
+			}
+			analyser[i][0] = maxForVerticalIndex;
+			for(int j =1; j<ClusterSize+1;j++)
+			{
+				analyser[i][j]=outputFromWeka[i][j]/totalValueForVerticalForAllCluster;
+				
+			}
+		}
+		print2DArray(analyser,NumberOfVerticals,ClusterSize+1);
+		return analyser;
+		
+	}
+	private void print2DArray(double arr[][], int rows, int columns)
+	{
+		for(int i = 0; i< rows; i++)
+		{
+			for(int j = 0; j< columns; j++){
+				
+				System.out.print(arr[i][j]+" , ");
+			}
+			System.out.println();
+		}
+	}
 	public static void main(String s[]) throws Exception{
 		String sCurrentLine;
-		int NumberOfClusters = 25;
+		int NumberOfClusters = 10;
 		int TotalCMSVerticals = 531;
 		BufferedReader br = null;
 		
-		br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/Output_25"));
+		br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/10-cluster"));
 		int startLine = 1; 
 		while ((sCurrentLine = br.readLine()) != null) {
 			if(sCurrentLine.contains("Full Data"))
-//			{ 	System.out.println(sCurrentLine);
 				{
 				System.out.println(sCurrentLine);
 				break;
@@ -26,7 +64,6 @@ public class ParseOutput {
 			
 		}
 		
-		//br.close();
 	
 		int currStart = startLine;
 		double[][] outputArr = new double[TotalCMSVerticals+1][NumberOfClusters+1];
@@ -34,13 +71,9 @@ public class ParseOutput {
 		String[] cmsVerticals = new String[TotalCMSVerticals];
 		int x =0;
 		while ((sCurrentLine = br.readLine()) != null && currStart < startLine +2+ TotalCMSVerticals) {
-//			System.out.println(currStart+",,"+(startLine + TotalCMSVerticals)+",,"+sCurrentLine);
 			if(currStart >= startLine+2)
 			{	StringTokenizer st = new StringTokenizer(sCurrentLine);
-//				for(int x = 0; x < TotalCMSVerticals; x++)
-//				{
 				cmsVerticals[x] = st.nextToken();
-//				System.out.println(st.nextToken());
 				Double totalforCurrVertical = Double.parseDouble(st.nextToken());
 				totalofAllVertical[0]+=totalforCurrVertical;
 				outputArr[x][0] =totalforCurrVertical;
@@ -51,31 +84,21 @@ public class ParseOutput {
 					outputArr[x][y] = Double.parseDouble(t);
 				}
 				x++;
-//			}
 			}
 
 			currStart++;
 		}
+		br.close();
 		int y = 0;
-		System.out.println("asasasssaas"+totalofAllVertical.length);
 		for(Double r:totalofAllVertical){
 			outputArr[TotalCMSVerticals][y] = r;
-			System.out.println("rrrrrtrt"+r);
 			y++;
 		}
 		
-		for(int i = 0; i<TotalCMSVerticals+1;i++)
-		{
-			for(int j = 0; j<NumberOfClusters+1;j++)
-			{	
-//				if (i<10)
-//				{System.out.print(outputArr[i][j]+",");}
-			}
-//			if (i<10)
-//			System.out.println("");
-		}
-		
-		System.out.println("CHECK");
+		createJson(NumberOfClusters, TotalCMSVerticals, outputArr, cmsVerticals);
+	}
+	private static void createJson(int NumberOfClusters, int TotalCMSVerticals,
+			double[][] outputArr, String[] cmsVerticals) {
 		FileWriter fileWriter = null;
 		
 		try{
@@ -97,7 +120,7 @@ public class ParseOutput {
 			{
 				//Print name of Vertical
 				//double value = (outputArr[jvar][0]*outputArr[jvar][ivar]*100)/(totalofAllVertical[0]*totalofAllVertical[ivar]);
-				double value = (outputArr[jvar][ivar]*100)/(totalofAllVertical[ivar]);
+				double value = (outputArr[jvar][ivar]);//*100)/(totalofAllVertical[0]);
 //				if(ivar == NumberOfClusters)
 //					System.out.println(cmsVerticals[jvar]+" "+outputArr[jvar][0]+" "+outputArr[jvar][ivar]+" "+totalofAllVertical[0]+" "+totalofAllVertical[ivar]);
 				fileWriter.append("{\"name\": \""+cmsVerticals[jvar]+"\", \"size\": "+value);
