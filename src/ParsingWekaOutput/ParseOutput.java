@@ -154,7 +154,7 @@ public class ParseOutput {
 
 //				if(ivar == NumberOfClusters)
 //					System.out.println(cmsVerticals[jvar]+" "+outputArr[jvar][0]+" "+outputArr[jvar][ivar]+" "+totalofAllVertical[0]+" "+totalofAllVertical[ivar]);
-				fileWriter.append("{\"name\": \""+cmsVerticals[jvar]+"\", \"size\": "+value);
+				fileWriter.append("{\"name\": \""+cmsVerticals[jvar]+": "+value+"\", \"size\": "+value);
 				if(jvar < TotalCMSVerticals-1)
 					fileWriter.append(" },\n");
 				else
